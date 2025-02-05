@@ -1,0 +1,9 @@
+[package]
+name = "work_log"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+chrono = "0.4"
+device_query = "0.2"
+active-win-pos-rs = "0.9"
