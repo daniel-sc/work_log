@@ -2,6 +2,8 @@ use chrono::Local;
 use std::fs::{create_dir_all, OpenOptions};
 use std::path::Path;
 use std::io::Write;
+use crate::get_state;
+
 
 /// Appends a log line to the CSV file.
 ///
@@ -10,19 +12,8 @@ use std::io::Write;
 pub(crate) fn add_to_csv(
     csv_filename: &str,
     current_time: &chrono::DateTime<Local>,
-    window_title: &str,
-    cursor: &str,
+    state: &get_state::State,
 ) {
-    // Format the time to include milliseconds (as in the Python code)
-    let ms = current_time.timestamp_subsec_millis();
-    let time_str = format!("{}.{:03}", current_time.format("%Y-%m-%d %H:%M:%S"), ms);
-
-    // Remove any semicolons from the window title
-    let title_adapted = window_title.replace(";", "");
-    let line = format!("{};{};{}", time_str, title_adapted, cursor);
-
-    println!("{}", line);
-
     // Ensure that the parent directory exists
     if let Some(parent) = Path::new(csv_filename).parent() {
         if !parent.exists() {
@@ -40,7 +31,7 @@ pub(crate) fn add_to_csv(
         .open(csv_filename);
     match file_result {
         Ok(mut file) => {
-            if let Err(e) = writeln!(file, "{}", line) {
+            if let Err(e) = writeln!(file, "{}", state.to_csv(&current_time)) {
                 eprintln!("Error writing to file {}: {}", csv_filename, e);
             }
         }
