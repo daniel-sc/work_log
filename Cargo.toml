@@ -5,5 +5,5 @@ edition = "2021"
 
 [dependencies]
 chrono = "0.4"
-device_query = "0.2"
+device_query = "3.0.0"
 active-win-pos-rs = "0.9"
