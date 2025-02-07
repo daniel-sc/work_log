@@ -21,6 +21,7 @@ fn main() {
         println!("  --frequency=SECONDS  set the frequency of logging (default: 2.0)");
         println!("  --file=FILE          set the file to write to (default: ~/work_log.csv)");
         println!("  --stdout             print to stdout instead of a file");
+        println!("  --help               display this help and exit");
         return;
     }
     let freq = args
