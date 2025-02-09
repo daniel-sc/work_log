@@ -2,6 +2,7 @@ mod get_state;
 mod write_csv;
 
 use crate::get_state::State;
+use auto_launch::AutoLaunch;
 use chrono::Local;
 use std::env;
 use std::path::Path;
@@ -10,6 +11,7 @@ use std::time::Duration;
 
 const DEFAULT_FREQUENCY: f64 = 2.0; // seconds
 const ARG_STDOUT: &str = "--stdout";
+const AUTOSTART_APP_NAME: &'static str = "Work Log";
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -21,9 +23,58 @@ fn main() {
         println!("  --frequency=SECONDS  set the frequency of logging (default: 2.0)");
         println!("  --file=FILE          set the file to write to (default: ~/work_log.csv)");
         println!("  --stdout             print to stdout instead of a file");
+        println!("  --autostart-install  install the program to run at startup.");
+        println!("    (options are preserved, do not move the executable afterwards)");
+        println!("  --autostart-remove   remove the program from startup");
         println!("  --help               display this help and exit");
         return;
     }
+
+    if args.iter().any(|arg| arg == "--autostart-install") {
+        let vec = args
+            .iter()
+            .filter(|arg| *arg != "--autostart-install")
+            // adapt relative paths to absolute paths:
+            .map(|arg| {
+                if arg.starts_with("--file=") {
+                    let abs = env::current_dir()
+                        .expect("could not locate current directory")
+                        .join(Path::new(&arg[7..]))
+                        .canonicalize()
+                        .expect("could not canonicalize path")
+                        .to_str()
+                        .expect("could not convert path to string")
+                        .to_string();
+                    format!("--file={}", abs)
+                } else {
+                    arg.clone()
+                }
+            })
+            .collect::<Vec<String>>();
+        let auto = AutoLaunch::new(
+            AUTOSTART_APP_NAME,
+            env::current_exe()
+                .expect("could not locate current executable path")
+                .to_str()
+                .unwrap(),
+            vec.as_slice(),
+        );
+        auto.enable().expect("could not enable autostart");
+        return;
+    }
+    if args.iter().any(|arg| arg == "--autostart-remove") {
+        let auto = AutoLaunch::new(
+            AUTOSTART_APP_NAME,
+            env::current_exe()
+                .expect("could not locate current executable path")
+                .to_str()
+                .unwrap(),
+            &["--minimized"],
+        );
+        auto.disable().expect("could not disable autostart");
+        return;
+    }
+
     let freq = args
         .iter()
         .find(|arg| arg.starts_with("--frequency="))
