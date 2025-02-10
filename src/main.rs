@@ -2,7 +2,7 @@ mod get_state;
 mod write_csv;
 
 use crate::get_state::State;
-use auto_launch::AutoLaunch;
+use auto_launch::AutoLaunchBuilder;
 use chrono::Local;
 use std::env;
 use std::path::Path;
@@ -13,7 +13,7 @@ const DEFAULT_FREQUENCY: f64 = 2.0; // seconds
 const ARG_STDOUT: &str = "--stdout";
 const AUTOSTART_APP_NAME: &'static str = "Work Log";
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = env::args().collect();
     if args.iter().any(|arg| arg == "--help") {
         println!("Usage: work_log [OPTION]...");
@@ -27,7 +27,7 @@ fn main() {
         println!("    (options are preserved, do not move the executable afterwards)");
         println!("  --autostart-remove   remove the program from startup");
         println!("  --help               display this help and exit");
-        return;
+        return Ok(());
     }
 
     if args.iter().any(|arg| arg == "--autostart-install") {
@@ -51,28 +51,24 @@ fn main() {
                 }
             })
             .collect::<Vec<String>>();
-        let auto = AutoLaunch::new(
-            AUTOSTART_APP_NAME,
-            env::current_exe()
-                .expect("could not locate current executable path")
-                .to_str()
-                .unwrap(),
-            vec.as_slice(),
-        );
-        auto.enable().expect("could not enable autostart");
-        return;
+        AutoLaunchBuilder::new()
+            .set_app_name(AUTOSTART_APP_NAME)
+            .set_app_path(env::current_exe().expect("could not locate current executable path").to_str().expect("could not convert path to string"))
+            .set_args(vec.as_slice())
+            .set_use_launch_agent(false)
+            .build()?
+            .enable()?;
+        return Ok(());
     }
     if args.iter().any(|arg| arg == "--autostart-remove") {
-        let auto = AutoLaunch::new(
-            AUTOSTART_APP_NAME,
-            env::current_exe()
-                .expect("could not locate current executable path")
-                .to_str()
-                .unwrap(),
-            &["--minimized"],
-        );
-        auto.disable().expect("could not disable autostart");
-        return;
+        AutoLaunchBuilder::new()
+            .set_app_name(AUTOSTART_APP_NAME)
+            .set_app_path(env::current_exe().expect("could not locate current executable path").to_str().expect("could not convert path to string"))
+            .set_args(&[] as &[&str])
+            .set_use_launch_agent(false)
+            .build()?
+            .disable()?;
+        return Ok(());
     }
 
     let freq = args
