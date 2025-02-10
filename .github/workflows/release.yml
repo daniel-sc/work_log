@@ -34,10 +34,9 @@ jobs:
       - uses: actions/checkout@v4
       # on unbuntu-latest, libx11-dev is required for building.
       - name: Install dependencies
-        run: |
-          if [ ${{ matrix.os }} = 'ubuntu-latest' ]; then
-              sudo apt-get update && sudo apt-get install -y libx11-dev
-          fi
+      - name: Install dependencies (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get update && sudo apt-get install -y libx11-dev
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
           # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
