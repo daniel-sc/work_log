@@ -54,3 +54,8 @@ The resulting csv file will look like this:
 2025-02-10T14:12:15.326757500+01:00,Microsoft Teams,Chat | My Collegue | MyOrg | me@MyOrg.tld | Microsoft Teams,973,702
 2025-02-10T14:12:19.330715500+01:00,Microsoft Teams,Chat | My Collegue | MyOrg | me@MyOrg.tld | Microsoft Teams,1161,441
 ```
+
+## View
+The resulting CSV can be analysed by [work_log_view](https://daniel-sc.github.io/work_log_view/) - just drop the CSV in your browser window and get your result:
+
+![image](https://github.com/user-attachments/assets/5b20e5f2-058c-4451-9b84-e52b655b9845)
