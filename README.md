@@ -58,4 +58,5 @@ The resulting csv file will look like this:
 ## View
 The resulting CSV can be analysed by [work_log_view](https://daniel-sc.github.io/work_log_view/) - just drop the CSV in your browser window and get your result:
 
-![image](https://github.com/user-attachments/assets/5b20e5f2-058c-4451-9b84-e52b655b9845)
+![image](https://github.com/user-attachments/assets/b99ffd02-4189-4236-b89a-8497bf7e8959)
+
