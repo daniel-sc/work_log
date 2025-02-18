@@ -3,7 +3,7 @@
 Log the active window (title + app name) and cursor position to a CSV file. 
 Only if the window and/or cursor position changes, a new line is added.
 
-This can be used to analyze how you spend your tiMyOrg.tld on your computer.
+This can be used to analyze how you spend your time on your computer.
 
 Supported platforms:
 - Windows
