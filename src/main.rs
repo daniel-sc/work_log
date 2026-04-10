@@ -53,7 +53,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .collect::<Vec<String>>();
         AutoLaunchBuilder::new()
             .set_app_name(AUTOSTART_APP_NAME)
-            .set_app_path(env::current_exe().expect("could not locate current executable path").to_str().expect("could not convert path to string"))
+            .set_app_path(
+                env::current_exe()
+                    .expect("could not locate current executable path")
+                    .to_str()
+                    .expect("could not convert path to string"),
+            )
             .set_args(vec.as_slice())
             .set_use_launch_agent(false)
             .build()?
@@ -63,7 +68,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     if args.iter().any(|arg| arg == "--autostart-remove") {
         AutoLaunchBuilder::new()
             .set_app_name(AUTOSTART_APP_NAME)
-            .set_app_path(env::current_exe().expect("could not locate current executable path").to_str().expect("could not convert path to string"))
+            .set_app_path(
+                env::current_exe()
+                    .expect("could not locate current executable path")
+                    .to_str()
+                    .expect("could not convert path to string"),
+            )
             .set_args(&[] as &[&str])
             .set_use_launch_agent(false)
             .build()?
@@ -91,6 +101,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         })
         .unwrap_or(&default_file);
     println!("Logging to {}", file.display());
+
+    // Start background mouse listener for cursor position tracking
+    get_state::start_mouse_listener();
 
     let mut prev_state: State = get_state::get_state();
     loop {

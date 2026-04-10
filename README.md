@@ -7,8 +7,26 @@ This can be used to analyze how you spend your time on your computer.
 
 Supported platforms:
 - Windows
-- Linux
+- Linux (X11 and Wayland)
 - MacOS
+
+## Prerequisites
+
+### Linux
+
+For cursor position tracking, the user running `work_log` must be a member of the `input` group:
+
+```bash
+sudo usermod -aG input $USER
+```
+
+Log out and back in for the group change to take effect.
+
+> **Note:** On some distributions, the group may be called `plugdev` instead. If `input` doesn't work, try adding yourself to `plugdev` as well.
+
+### macOS
+
+The application needs Accessibility permissions. Go to System Preferences > Security & Privacy > Privacy > Accessibility and add the terminal or application running `work_log`.
 
 ## Install
 
