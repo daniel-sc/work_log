@@ -1,6 +1,7 @@
 use chrono::Local;
 use once_cell::sync::Lazy;
 use rdev::{listen, Event, EventType};
+use std::panic;
 use std::sync::RwLock;
 use std::thread;
 use x_win::get_active_window;
@@ -52,6 +53,26 @@ pub fn start_mouse_listener() {
             eprintln!("Cursor position tracking may not work. On Linux, ensure you are in the 'input' group.");
         }
     });
+}
+
+/// Wrapper around x_win::get_active_window() that catches panics from
+/// upstream bugs (e.g., missing JSON keys in GNOME Shell extension responses
+/// when no window is focused during autostart).
+fn safe_get_active_window() -> Result<x_win::WindowInfo, String> {
+    match panic::catch_unwind(|| get_active_window()) {
+        Ok(Ok(window)) => Ok(window),
+        Ok(Err(e)) => Err(format!("{:?}", e)),
+        Err(panic_err) => {
+            let msg = if let Some(s) = panic_err.downcast_ref::<&str>() {
+                s.to_string()
+            } else if let Some(s) = panic_err.downcast_ref::<String>() {
+                s.clone()
+            } else {
+                "unknown panic".to_string()
+            };
+            Err(format!("x-win panicked: {}", msg))
+        }
+    }
 }
 
 /// Check if the x-win GNOME Shell extension directory exists on disk.
@@ -118,7 +139,7 @@ pub fn ensure_gnome_wayland_extension() {
         if attempt > 0 {
             std::thread::sleep(std::time::Duration::from_secs(2));
         }
-        if get_active_window().is_ok() {
+        if safe_get_active_window().is_ok() {
             working = true;
             break;
         }
@@ -135,14 +156,14 @@ pub fn ensure_gnome_wayland_extension() {
 
 pub(crate) fn get_state() -> State {
     let cursor = CURSOR_POS.read().map(|pos| *pos).unwrap_or((0, 0));
-    match get_active_window() {
+    match safe_get_active_window() {
         Ok(window) => State {
             app_name: window.info.name,
             window_title: window.title,
             cursor,
         },
         Err(e) => {
-            eprintln!("Error getting active window: {:?}", e);
+            eprintln!("Error getting active window: {}", e);
             State {
                 app_name: String::from(""),
                 window_title: String::from(""),
