@@ -100,7 +100,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             )
         })
         .unwrap_or(&default_file);
-    println!("Logging to {}", file.display());
+    let use_stdout = args.iter().any(|arg| arg == ARG_STDOUT);
+    if use_stdout {
+        eprintln!("Logging to stdout");
+    } else {
+        eprintln!("Logging to {}", file.display());
+    }
 
     // On GNOME Wayland, ensure the shell extension for active window detection is set up
     get_state::ensure_gnome_wayland_extension();
@@ -113,7 +118,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let current_time = Local::now();
         let state = get_state::get_state();
         if state != prev_state {
-            if args.iter().any(|arg| arg == ARG_STDOUT) {
+            if use_stdout {
                 println!("{}", state.to_csv(&current_time));
             } else {
                 write_csv::add_to_csv(file, &current_time, &state);
