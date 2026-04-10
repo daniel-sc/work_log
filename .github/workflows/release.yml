@@ -35,7 +35,7 @@ jobs:
       # on ubuntu-latest, libx11-dev and libdbus-1-dev are required for building.
       - name: Install dependencies (Ubuntu)
         if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get update && sudo apt-get install -y libx11-dev libxi-dev libxtst-dev libevdev-dev libdbus-1-dev pkg-config
+        run: sudo apt-get update && sudo apt-get install -y libx11-dev libxi-dev libxtst-dev libevdev-dev libdbus-1-dev pkg-config libinput-dev libxkbcommon-dev libudev-dev libxcb1-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev libxcb-shm0-dev
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
           # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.

@@ -102,6 +102,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .unwrap_or(&default_file);
     println!("Logging to {}", file.display());
 
+    // On GNOME Wayland, ensure the shell extension for active window detection is set up
+    get_state::ensure_gnome_wayland_extension();
+
     // Start background mouse listener for cursor position tracking
     get_state::start_mouse_listener();
 
