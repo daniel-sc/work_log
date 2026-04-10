@@ -2,7 +2,7 @@ mod get_state;
 mod write_csv;
 
 use crate::get_state::State;
-use auto_launch::AutoLaunchBuilder;
+use auto_launch::{AutoLaunchBuilder, MacOSLaunchMode};
 use chrono::Local;
 use std::env;
 use std::path::Path;
@@ -60,7 +60,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .expect("could not convert path to string"),
             )
             .set_args(vec.as_slice())
-            .set_use_launch_agent(false)
+            .set_macos_launch_mode(MacOSLaunchMode::LaunchAgent)
             .build()?
             .enable()?;
         return Ok(());
@@ -75,7 +75,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .expect("could not convert path to string"),
             )
             .set_args(&[] as &[&str])
-            .set_use_launch_agent(false)
+            .set_macos_launch_mode(MacOSLaunchMode::LaunchAgent)
             .build()?
             .disable()?;
         return Ok(());
