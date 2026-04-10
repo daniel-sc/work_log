@@ -111,16 +111,25 @@ pub fn ensure_gnome_wayland_extension() {
     }
 
     // Probe: try an actual get_active_window() call to see if the extension works.
-    match get_active_window() {
-        Ok(_) => {}
-        Err(_) => {
-            eprintln!("GNOME Wayland: x-win shell extension is installed but active window");
-            eprintln!("detection is not working. Make sure the extension is enabled:");
-            eprintln!("  gnome-extensions enable x-win@miniben90.org");
-            eprintln!("You may need to log out and back in after enabling.");
-            eprintln!("");
-            eprintln!("The program will continue but window info may be empty.");
+    // Retry several times because on login (autostart) the GNOME Shell extension
+    // may still be loading when we start.
+    let mut working = false;
+    for attempt in 0..10 {
+        if attempt > 0 {
+            std::thread::sleep(std::time::Duration::from_secs(2));
         }
+        if get_active_window().is_ok() {
+            working = true;
+            break;
+        }
+    }
+    if !working {
+        eprintln!("GNOME Wayland: x-win shell extension is installed but active window");
+        eprintln!("detection is not working. Make sure the extension is enabled:");
+        eprintln!("  gnome-extensions enable x-win@miniben90.org");
+        eprintln!("You may need to log out and back in after enabling.");
+        eprintln!("");
+        eprintln!("The program will continue but window info may be empty.");
     }
 }
 
