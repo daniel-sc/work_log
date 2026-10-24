@@ -1,4 +1,6 @@
 mod get_state;
+#[cfg(any(target_os = "linux", test))]
+mod gnome_extension;
 mod write_csv;
 
 use crate::get_state::State;
@@ -108,7 +110,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     // On GNOME Wayland, ensure the shell extension for active window detection is set up
-    get_state::ensure_gnome_wayland_extension();
+    #[cfg(target_os = "linux")]
+    gnome_extension::ensure_gnome_wayland_extension();
 
     // Start background mouse listener for cursor position tracking
     get_state::start_mouse_listener();

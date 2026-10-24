@@ -24,12 +24,13 @@ sudo apt-get install -y libx11-dev libxi-dev libxtst-dev libevdev-dev libdbus-1-
 ## Linux Runtime Requirements
 
 - **Mouse tracking (Wayland):** User must be in the `input` group: `sudo usermod -aG input $USER` (log out/in after)
-- **Active window (GNOME Wayland):** Requires the x-win GNOME Shell extension. The app auto-installs it on first run; user must then log out/in and enable it with `gnome-extensions enable x-win@miniben90.org`
+- **Active window (GNOME Wayland):** Requires the x-win GNOME Shell extension. The app installs missing extensions and refreshes outdated metadata/incomplete installations (GNOME 42–50); user must then log out/in and enable it with `gnome-extensions enable x-win@miniben90.org`
 
 ## Structure
 
 - `src/main.rs` - CLI entry point, argument parsing, main loop
 - `src/get_state.rs` - Reads active window via `x-win` and cursor via `rdev`
+- `src/gnome_extension.rs` - GNOME Wayland extension setup, upgrade detection, and startup probe
 - `src/write_csv.rs` - Appends state to CSV file
 
 ## CI

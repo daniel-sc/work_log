@@ -24,6 +24,23 @@ Log out and back in for the group change to take effect.
 
 > **Note:** On some distributions, the group may be called `plugdev` instead. If `input` doesn't work, try adding yourself to `plugdev` as well.
 
+#### GNOME Wayland
+
+Active window detection requires the **x-win GNOME Shell extension**. On startup,
+`work_log` installs it if missing and refreshes outdated compatibility metadata or
+incomplete installations in `~/.local/share/gnome-shell/extensions/x-win@miniben90.org`.
+The bundled extension declares support for GNOME 42–50.
+
+After installation or an update, log out and back in, then enable it:
+
+```bash
+gnome-extensions enable x-win@miniben90.org
+```
+
+Restart `work_log` afterwards. Updating the files does not reload the extension in
+the running GNOME session. At subsequent logins, `work_log` waits up to 18 seconds
+for the extension to become available.
+
 ### macOS
 
 The application needs the following permissions in **System Settings > Privacy & Security**:
