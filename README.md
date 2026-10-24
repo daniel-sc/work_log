@@ -26,7 +26,14 @@ Log out and back in for the group change to take effect.
 
 ### macOS
 
-The application needs Accessibility permissions. Go to System Preferences > Security & Privacy > Privacy > Accessibility and add the terminal or application running `work_log`.
+The application needs the following permissions in **System Settings > Privacy & Security**:
+
+- **Accessibility** for cursor tracking.
+- **Screen & System Audio Recording** (called **Screen Recording** on older macOS versions) for window titles. Without this permission, app names may be logged while window titles remain empty.
+
+Enable these permissions for the terminal or application running `work_log`, or for `work_log` itself if running independently (for example, via autostart). Fully quit and restart the affected application or `work_log` after granting permissions.
+
+On older macOS versions, these settings are under **System Preferences > Security & Privacy > Privacy**.
 
 ## Install
 
@@ -77,4 +84,3 @@ The resulting csv file will look like this:
 The resulting CSV can be analysed by [work_log_view](https://daniel-sc.github.io/work_log_view/) - just drop the CSV in your browser window and get your result:
 
 ![image](https://github.com/user-attachments/assets/b99ffd02-4189-4236-b89a-8497bf7e8959)
-
