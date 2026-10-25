@@ -24,10 +24,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v7
+    - name: Install Rust checks
+      run: rustup component add rustfmt clippy
+    - name: Check formatting
+      run: cargo fmt --all -- --check
     - name: Install dependencies
       if: matrix.os == 'ubuntu-latest'
       run: sudo apt-get update && sudo apt-get install -y libx11-dev libxi-dev libxtst-dev libevdev-dev libdbus-1-dev pkg-config libinput-dev libxkbcommon-dev libudev-dev libxcb1-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev libxcb-shm0-dev
     - name: Build
-      run: cargo build --verbose --target ${{ matrix.target }}
+      run: cargo build --locked --verbose --target ${{ matrix.target }}
     - name: Run tests
-      run: cargo test --verbose --target ${{ matrix.target }}
+      run: cargo test --locked --verbose --target ${{ matrix.target }}
+    - name: Run Clippy
+      run: cargo clippy --locked --all-targets --target ${{ matrix.target }} -- -D warnings

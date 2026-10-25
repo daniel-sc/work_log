@@ -42,4 +42,5 @@ jobs:
           # Note that glob pattern is not supported yet.
           bin: 'work_log'
           target: ${{ matrix.target }}
+          locked: true
           token: ${{ secrets.GITHUB_TOKEN }}

@@ -13,7 +13,7 @@ use std::time::Duration;
 
 const DEFAULT_FREQUENCY: f64 = 2.0; // seconds
 const ARG_STDOUT: &str = "--stdout";
-const AUTOSTART_APP_NAME: &'static str = "Work Log";
+const AUTOSTART_APP_NAME: &str = "Work Log";
 
 fn parse_frequency(value: &str) -> Result<Duration, &'static str> {
     value

@@ -28,7 +28,7 @@ pub(crate) fn add_to_csv(
         .open(csv_filename);
     match file_result {
         Ok(mut file) => {
-            if let Err(e) = writeln!(file, "{}", state.to_csv(&current_time)) {
+            if let Err(e) = writeln!(file, "{}", state.to_csv(current_time)) {
                 eprintln!("Error writing to file {}: {}", csv_filename.display(), e);
             }
         }
