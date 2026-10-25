@@ -131,6 +131,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             } else {
                 write_csv::add_to_csv(file, &current_time, &state);
             }
+            // Best effort: discard failed file records and keep sampling without retrying them.
             prev_state = Some(state);
         }
 
