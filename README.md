@@ -83,6 +83,9 @@ Options:
 To refresh an existing autostart entry after an upgrade, rerun `--autostart-install`
 with your desired options.
 
+On macOS, autostart installation rejects paths/options containing `&`, `<`, `]]>`,
+carriage returns, or XML-invalid characters. Use another path or run normally.
+
 ## Example
 
 The resulting csv file will look like this:

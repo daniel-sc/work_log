@@ -8,6 +8,28 @@ pub(crate) fn quote_argument(value: &str) -> String {
     value.to_owned() // LaunchAgent already stores each argument separately.
 }
 
+#[cfg(any(target_os = "macos", test))]
+pub(crate) fn validate_launch_agent_values(
+    executable: &str,
+    args: &[String],
+) -> Result<(), String> {
+    // auto-launch writes these strings directly into XML. Reject values that would
+    // break it or change when parsed (entities and carriage-return normalization).
+    for value in std::iter::once(executable).chain(args.iter().map(String::as_str)) {
+        if value.contains(['&', '<'])
+            || value.contains("]]>")
+            || value.chars().any(|c| {
+                (c < ' ' && c != '\t' && c != '\n') || matches!(c, '\u{fffe}' | '\u{ffff}')
+            })
+        {
+            return Err(format!(
+                "Cannot install macOS autostart with {value:?}: use paths/options without &, <, ]]>, carriage returns, or XML-invalid characters."
+            ));
+        }
+    }
+    Ok(())
+}
+
 #[cfg(any(target_os = "linux", test))]
 fn quote_desktop_argument(value: &str) -> String {
     // Exec quoting is decoded after desktop-entry string escaping, hence doubled escapes.
@@ -59,6 +81,41 @@ fn quote_windows_argument(value: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn rejects_launch_agent_values_that_xml_cannot_preserve() {
+        for value in [
+            "/Users/me/R&D/work_log",
+            "--file=<report>.csv",
+            "--file=R&amp;D.csv",
+            "--file=report]]>.csv",
+            "a\rb",
+            "a\0b",
+            "a\u{b}b",
+            "a\u{fffe}b",
+            "a\u{ffff}b",
+        ] {
+            assert!(
+                validate_launch_agent_values(value, &[]).is_err(),
+                "{value:?}"
+            );
+            let error = validate_launch_agent_values("/Applications/work_log", &[value.to_owned()])
+                .unwrap_err();
+            assert!(error.contains(&format!("{value:?}")));
+        }
+    }
+
+    #[test]
+    fn accepts_launch_agent_values_that_need_no_xml_escaping() {
+        for value in [
+            "/Users/me/My Apps/work_log",
+            "--file=/Users/me/日本語/notes.csv",
+            "--file=it's a \"report\" > 50%.csv",
+            "a\nb\tc",
+        ] {
+            assert!(validate_launch_agent_values(value, &[value.to_owned()]).is_ok());
+        }
+    }
 
     #[test]
     fn desktop_arguments_preserve_spaces_and_reserved_characters() {

@@ -77,6 +77,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let executable = executable
             .to_str()
             .ok_or("autostart executable path is not valid UTF-8")?;
+        #[cfg(target_os = "macos")]
+        autostart::validate_launch_agent_values(executable, &args)?;
         AutoLaunchBuilder::new()
             .set_app_name(AUTOSTART_APP_NAME)
             .set_app_path(&autostart::quote_argument(executable))
