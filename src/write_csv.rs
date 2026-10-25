@@ -4,10 +4,8 @@ use std::fs::{create_dir_all, OpenOptions};
 use std::io::Write;
 use std::path::Path;
 
-/// Appends a log line to the CSV file.
-///
-/// The log line has the format:
-/// `YYYY-MM-DD HH:MM:SS.mmm;window_title_without_semicolon;x,y`
+/// Appends a CSV record: RFC 3339 timestamp, app name, window title, cursor x/y.
+/// Text fields are quoted when needed and may contain embedded newlines.
 pub(crate) fn add_to_csv(
     csv_filename: &Path,
     current_time: &chrono::DateTime<Local>,

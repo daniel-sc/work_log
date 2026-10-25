@@ -1,7 +1,9 @@
 # work_log
 
 Log the active window (title + app name) and cursor position to a CSV file. 
-Only if the window and/or cursor position changes, a new line is added.
+The initial state is logged immediately. After that, a new record is added only
+if the window and/or cursor position changes. Text fields use CSV quoting to
+preserve commas, quotes, and embedded newlines.
 
 This can be used to analyze how you spend your time on your computer.
 

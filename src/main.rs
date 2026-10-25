@@ -116,17 +116,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Start background mouse listener for cursor position tracking
     get_state::start_mouse_listener();
 
-    let mut prev_state: State = get_state::get_state();
+    let mut prev_state: Option<State> = None;
     loop {
         let current_time = Local::now();
         let state = get_state::get_state();
-        if state != prev_state {
+        if prev_state.as_ref() != Some(&state) {
             if use_stdout {
                 println!("{}", state.to_csv(&current_time));
             } else {
                 write_csv::add_to_csv(file, &current_time, &state);
             }
-            prev_state = state;
+            prev_state = Some(state);
         }
 
         sleep(Duration::from_secs_f64(freq));

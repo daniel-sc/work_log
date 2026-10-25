@@ -13,22 +13,24 @@ pub struct State {
     pub cursor: (i32, i32),
 }
 
-const SEPARATOR: &str = ",";
-
 impl State {
     pub fn to_csv(&self, time: &chrono::DateTime<Local>) -> String {
         format!(
-            "{}{}{}{}{}{}{}{}{}",
+            "{},{},{},{},{}",
             time.format("%+"),
-            SEPARATOR,
-            self.app_name.replace(SEPARATOR, ""),
-            SEPARATOR,
-            self.window_title.replace(SEPARATOR, ""),
-            SEPARATOR,
+            csv_field(&self.app_name),
+            csv_field(&self.window_title),
             self.cursor.0,
-            SEPARATOR,
             self.cursor.1
         )
+    }
+}
+
+fn csv_field(value: &str) -> String {
+    if value.contains([',', '"', '\r', '\n']) {
+        format!("\"{}\"", value.replace('"', "\"\""))
+    } else {
+        value.to_owned()
     }
 }
 
@@ -68,6 +70,38 @@ pub(crate) fn get_state() -> State {
                 window_title: String::from(""),
                 cursor,
             }
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn serializes_csv_fields_without_losing_text() {
+        let time = chrono::DateTime::parse_from_rfc3339("2026-01-02T03:04:05Z")
+            .unwrap()
+            .with_timezone(&Local);
+        for (text, encoded) in [
+            ("", ""),
+            ("Editor – 日本語", "Editor – 日本語"),
+            ("App, Inc.", "\"App, Inc.\""),
+            ("a\"b", "\"a\"\"b\""),
+            ("first\nsecond", "\"first\nsecond\""),
+            ("first\rsecond", "\"first\rsecond\""),
+            ("a,\"b\"\r\nc", "\"a,\"\"b\"\"\r\nc\""),
+        ] {
+            let state = State {
+                app_name: text.to_owned(),
+                window_title: text.to_owned(),
+                cursor: (-10, 20),
+            };
+            assert_eq!(
+                state.to_csv(&time),
+                format!("{},{encoded},{encoded},-10,20", time.format("%+")),
+                "input: {text:?}",
+            );
         }
     }
 }
