@@ -4,7 +4,7 @@ use std::fs::{create_dir_all, OpenOptions};
 use std::io::Write;
 use std::path::Path;
 
-/// Appends a CSV record: RFC 3339 timestamp, app name, window title, cursor x/y.
+/// Appends a CSV record: RFC 3339 timestamp, app name, window title, two empty legacy fields.
 /// Text fields are quoted when needed and may contain embedded newlines.
 pub(crate) fn add_to_csv(
     csv_filename: &Path,

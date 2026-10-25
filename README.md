@@ -1,9 +1,9 @@
 # work_log
 
-Log the active window (title + app name) and cursor position to a CSV file. 
-The initial state is logged immediately. After that, a new record is added only
-if the window and/or cursor position changes. Text fields use CSV quoting to
-preserve commas, quotes, and embedded newlines.
+Log the active window (title + app name) to CSV on startup, then on window changes
+or mouse movement since the previous sample. Cursor positions are not stored;
+the two legacy coordinate columns stay empty. CSV quoting preserves commas,
+quotes, and embedded newlines.
 
 This can be used to analyze how you spend your time on your computer.
 
@@ -16,7 +16,7 @@ Supported platforms:
 
 ### Linux
 
-For cursor position tracking, the user running `work_log` must be a member of the `input` group:
+For mouse movement tracking, the user running `work_log` must be a member of the `input` group:
 
 ```bash
 sudo usermod -aG input $USER
@@ -47,7 +47,7 @@ for the extension to become available.
 
 The application needs the following permissions in **System Settings > Privacy & Security**:
 
-- **Accessibility** for cursor tracking.
+- **Accessibility** for mouse movement tracking.
 - **Screen & System Audio Recording** (called **Screen Recording** on older macOS versions) for window titles. Without this permission, app names may be logged while window titles remain empty.
 
 Enable these permissions for the terminal or application running `work_log`, or for `work_log` itself if running independently (for example, via autostart). Fully quit and restart the affected application or `work_log` after granting permissions.
@@ -63,7 +63,7 @@ Download the latest release for your platform from the [releases page](https://g
 
 ```text
 Usage: work_log [OPTION]...
-Log the active window and cursor position to a CSV file.
+Log the active window on window changes or mouse movement to a CSV file.
 
 Options:
   --frequency=SECONDS  set the logging interval (positive; default: 2.0)
@@ -80,23 +80,9 @@ Options:
 The resulting csv file will look like this:
 
 ```csv
-2025-02-10T14:11:27.280560100+01:00,IntelliJ IDEA Ultimate Edition,my-project – my-project-api.yaml [my-project-specs],1859,-265
-2025-02-10T14:11:29.282786900+01:00,IntelliJ IDEA Ultimate Edition,my-project – my-project-api.yaml [my-project-specs],2797,-256
-2025-02-10T14:11:31.284762600+01:00,IntelliJ IDEA Ultimate Edition,my-project – my-project-api.yaml [my-project-specs],2785,-269
-2025-02-10T14:11:47.297288500+01:00,IntelliJ IDEA Ultimate Edition,my-project – my-project-api.yaml [my-project-specs],1187,342
-2025-02-10T14:11:49.299215900+01:00,IntelliJ IDEA Ultimate Edition,my-project – my-project-api.yaml [my-project-specs],1137,294
-2025-02-10T14:11:51.301234900+01:00,Microsoft Teams,Chat | My Collegue | MyOrg | me@MyOrg.tld | Microsoft Teams,2500,773
-2025-02-10T14:11:53.302912900+01:00,Google ChroMyOrg.tld,fix: remove redundant dependency installation step in release workflow · daniel-sc/work_log@7913ec1 - Google ChroMyOrg.tld,2627,-621
-2025-02-10T14:11:55.304411900+01:00,Google ChroMyOrg.tld,some-Details-CSV.xlsx - Google ChroMyOrg.tld,2627,-393
-2025-02-10T14:11:57.305902500+01:00,Google ChroMyOrg.tld,some-Details-CSV.xlsx - Google ChroMyOrg.tld,2425,-246
-2025-02-10T14:11:59.308051200+01:00,Google ChroMyOrg.tld,some-Details-CSV.xlsx - Google ChroMyOrg.tld,4006,-659
-2025-02-10T14:12:01.310655400+01:00,Microsoft Teams,Chat | My Collegue | MyOrg | me@MyOrg.tld | Microsoft Teams,3981,-653
-2025-02-10T14:12:03.313292200+01:00,Microsoft Teams,Chat | My Collegue | MyOrg | me@MyOrg.tld | Microsoft Teams,206,166
-2025-02-10T14:12:05.315070100+01:00,Microsoft Teams,Chat | My Collegue | MyOrg | me@MyOrg.tld | Microsoft Teams,826,752
-2025-02-10T14:12:07.317465200+01:00,Microsoft Teams,Chat | My Collegue | MyOrg | me@MyOrg.tld | Microsoft Teams,855,725
-2025-02-10T14:12:13.323934400+01:00,IntelliJ IDEA Ultimate Edition,my-project – my-project-api.yaml [my-project-specs],2199,-42
-2025-02-10T14:12:15.326757500+01:00,Microsoft Teams,Chat | My Collegue | MyOrg | me@MyOrg.tld | Microsoft Teams,973,702
-2025-02-10T14:12:19.330715500+01:00,Microsoft Teams,Chat | My Collegue | MyOrg | me@MyOrg.tld | Microsoft Teams,1161,441
+2025-02-10T14:11:27+01:00,Editor,my-project,,
+2025-02-10T14:11:29+01:00,Editor,my-project,,
+2025-02-10T14:11:31+01:00,Browser,"Report, Q4",,
 ```
 
 ## View

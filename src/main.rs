@@ -47,7 +47,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = env::args().skip(1).collect();
     if args.iter().any(|arg| arg == "--help") {
         println!("Usage: work_log [OPTION]...");
-        println!("Log the active window and cursor position to a CSV file.");
+        println!("Log the active window on window changes or mouse movement to a CSV file.");
         println!();
         println!("Options:");
         println!("  --frequency=SECONDS  set the logging interval (positive; default: 2.0)");
@@ -117,14 +117,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     #[cfg(target_os = "linux")]
     gnome_extension::ensure_gnome_wayland_extension();
 
-    // Start background mouse listener for cursor position tracking
+    // Start background mouse listener for activity tracking
     get_state::start_mouse_listener();
 
     let mut prev_state: Option<State> = None;
     loop {
         let current_time = Local::now();
         let state = get_state::get_state();
-        if prev_state.as_ref() != Some(&state) {
+        let mouse_moved = get_state::take_mouse_movement();
+        if mouse_moved || prev_state.as_ref() != Some(&state) {
             if use_stdout {
                 println!("{}", state.to_csv(&current_time));
             } else {

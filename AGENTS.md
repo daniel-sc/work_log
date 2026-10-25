@@ -2,7 +2,7 @@
 
 ## Overview
 
-Simple Rust CLI that logs the active window (app name + title) and cursor position to CSV when they change. Cross-platform: Linux, macOS, Windows.
+Simple Rust CLI that logs the active window (app name + title) to CSV on startup, window changes, or mouse movement. Two legacy coordinate columns stay empty. Cross-platform: Linux, macOS, Windows.
 
 ## Commands
 
@@ -29,7 +29,7 @@ sudo apt-get install -y libx11-dev libxi-dev libxtst-dev libevdev-dev libdbus-1-
 ## Structure
 
 - `src/main.rs` - CLI entry point, argument parsing, main loop
-- `src/get_state.rs` - Reads active window via `x-win` and cursor via `rdev`
+- `src/get_state.rs` - Reads active window via `x-win` and detects mouse movement via `rdev`
 - `src/gnome_extension.rs` - GNOME Wayland extension setup, upgrade detection, and startup probe
 - `src/write_csv.rs` - Appends state to CSV file
 
