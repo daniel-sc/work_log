@@ -12,7 +12,7 @@ use std::path::Path;
 use std::thread::sleep;
 use std::time::Duration;
 
-const DEFAULT_FREQUENCY: f64 = 2.0; // seconds
+const DEFAULT_INTERVAL: Duration = Duration::from_secs(2);
 const ARG_STDOUT: &str = "--stdout";
 const AUTOSTART_APP_NAME: &str = "Work Log";
 
@@ -66,7 +66,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .find_map(|arg| arg.strip_prefix("--frequency="))
         .map(parse_frequency)
         .transpose()?
-        .unwrap_or(Duration::from_secs_f64(DEFAULT_FREQUENCY));
+        .unwrap_or(DEFAULT_INTERVAL);
 
     if args.iter().any(|arg| arg == "--autostart-install") {
         let args = autostart_args(&args)?
