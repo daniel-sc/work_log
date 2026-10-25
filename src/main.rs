@@ -1,3 +1,4 @@
+mod autostart;
 mod get_state;
 #[cfg(any(target_os = "linux", test))]
 mod gnome_extension;
@@ -68,15 +69,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .unwrap_or(Duration::from_secs_f64(DEFAULT_FREQUENCY));
 
     if args.iter().any(|arg| arg == "--autostart-install") {
-        let args = autostart_args(&args)?;
+        let args = autostart_args(&args)?
+            .iter()
+            .map(|arg| autostart::quote_argument(arg))
+            .collect::<Vec<_>>();
+        let executable = env::current_exe()?;
+        let executable = executable
+            .to_str()
+            .ok_or("autostart executable path is not valid UTF-8")?;
         AutoLaunchBuilder::new()
             .set_app_name(AUTOSTART_APP_NAME)
-            .set_app_path(
-                env::current_exe()
-                    .expect("could not locate current executable path")
-                    .to_str()
-                    .expect("could not convert path to string"),
-            )
+            .set_app_path(&autostart::quote_argument(executable))
             .set_args(args.as_slice())
             .set_macos_launch_mode(MacOSLaunchMode::LaunchAgent)
             .build()?
@@ -160,8 +163,8 @@ mod tests {
     #[test]
     fn autostart_preserves_options_and_resolves_new_output_paths() {
         let dir = tempfile::tempdir().unwrap();
-        let absolute = dir.path().join("missing").join("report=2026.csv");
-        let relative = Path::new("missing").join("report=2026.csv");
+        let absolute = dir.path().join("My Logs").join("report=2026.csv");
+        let relative = Path::new("My Logs").join("report=2026.csv");
         for path in [relative.as_path(), absolute.as_path()] {
             let args = vec![
                 "--autostart-install".to_owned(),

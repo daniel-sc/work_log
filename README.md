@@ -75,6 +75,9 @@ Options:
   --help               display this help and exit
 ```
 
+To refresh an existing autostart entry after an upgrade, rerun `--autostart-install`
+with your desired options.
+
 ## Example
 
 The resulting csv file will look like this:

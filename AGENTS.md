@@ -29,6 +29,7 @@ sudo apt-get install -y libx11-dev libxi-dev libxtst-dev libevdev-dev libdbus-1-
 ## Structure
 
 - `src/main.rs` - CLI entry point, argument parsing, main loop
+- `src/autostart.rs` - Platform-specific quoting for autostart executable paths and arguments
 - `src/get_state.rs` - Reads active window via `x-win` and detects mouse movement via `rdev`
 - `src/gnome_extension.rs` - GNOME Wayland extension setup, upgrade detection, and startup probe
 - `src/write_csv.rs` - Appends state to CSV file
