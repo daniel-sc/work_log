@@ -106,6 +106,10 @@ pub fn ensure_gnome_wayland_extension() {
     );
     eprintln!("Make sure it is enabled: gnome-extensions enable {EXTENSION_UUID}");
     eprintln!("If it was just installed or updated, log out and back in, then restart work_log.");
+    eprintln!(
+        "If detection stopped after a GNOME upgrade, move {} to a backup location outside the extensions directory, then restart work_log to reinstall it. Log out and back in afterwards.",
+        extension_dir.display()
+    );
     eprintln!("The program will continue but window info may be empty.");
 }
 

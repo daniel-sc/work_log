@@ -43,6 +43,11 @@ Restart `work_log` afterwards. Updating the files does not reload the extension 
 the running GNOME session. At subsequent logins, `work_log` waits up to 18 seconds
 for the extension to become available.
 
+Upgrades across GNOME 45 may require reinstalling the extension even when its
+metadata looks current. Move the extension directory above to a backup location
+outside `gnome-shell/extensions`, restart `work_log`, then log out/in and enable
+the extension as described above.
+
 ### macOS
 
 The application needs the following permissions in **System Settings > Privacy & Security**:
