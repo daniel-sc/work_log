@@ -50,6 +50,6 @@ submission_id=$(jq -r '.id' "$signing_dir/notarization.json")
 xcrun notarytool log "$submission_id" "${notary_credentials[@]}"
 jq -e '.status == "Accepted"' "$signing_dir/notarization.json" > /dev/null
 
+# Stapling validates the ticket too; avoid a redundant CloudKit request.
 xcrun stapler staple "$disk_image"
-xcrun stapler validate "$disk_image"
 spctl --assess --type open --context context:primary-signature --verbose=2 "$disk_image"

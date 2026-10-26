@@ -1,6 +1,17 @@
 # Changelog
 
+## 1.2.0-beta.3
+
+- Ship the Developer ID signed and notarized Apple Silicon Mac download as a `.dmg`.
+  Open it, copy `work_log` to a permanent folder, and run it from Terminal.
+- Remove a duplicate ticket-validation request that failed on GitHub's Mac runner
+  after successful notarization and stapling. Gatekeeper assessment still gates upload.
+- Accessibility and Screen Recording permissions are still required; see the README.
+  Linux and Windows behavior is unchanged from beta.1.
+
 ## 1.2.0-beta.2
+
+The Mac upload failed during ticket validation; use beta.3 instead.
 
 - Sign and notarize the Apple Silicon macOS release with Apple Developer ID.
 - The Mac download is now a `.dmg` with an attached notarization ticket. Open it,
