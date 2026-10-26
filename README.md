@@ -63,6 +63,9 @@ On older macOS versions, these settings are under **System Preferences > Securit
 
 Download the latest release for your platform from the [releases page](https://github.com/daniel-sc/work_log/releases).
 
+On Apple Silicon Macs, open the `.dmg` and copy `work_log` to a permanent folder,
+then run it from Terminal. Starting with 1.2.0-beta.2, Mac releases are Developer ID
+signed and notarized. Grant the macOS permissions described above before logging.
 
 ## Usage
 

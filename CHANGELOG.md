@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.0-beta.2
+
+- Sign and notarize the Apple Silicon macOS release with Apple Developer ID.
+- The Mac download is now a `.dmg` with an attached notarization ticket. Open it,
+  copy `work_log` to a permanent folder, then run it from Terminal. Accessibility
+  and Screen Recording permissions are still required; see the README.
+- Linux and Windows behavior is unchanged from beta.1.
+
 ## 1.2.0-beta.1
 
 ### Changes
