@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased
+
+- Log the first sample and subsequent window changes or mouse movement. Keep the
+  five-column CSV format with empty coordinate fields and standard quoting for
+  commas, quotes, and embedded newlines; CSV readers must handle multiline fields.
+- Validate logging intervals and fix autostart path/argument handling. Rerun
+  `--autostart-install` from the permanent executable with your desired options
+  after upgrading. macOS rejects paths/options that cannot be written safely to XML.
+- Update dependencies and refresh outdated or incomplete GNOME extensions for
+  GNOME 42–50. Log out/in after extension updates; see the README for recovery
+  when upgrading across GNOME 45.
+- Ship signed and notarized macOS disk images. Downloads cover Linux/Windows
+  x86_64 and macOS Apple Silicon; Intel Mac binaries are no longer provided.
+
 ## 1.2.0-beta.3
 
 - Ship the Developer ID signed and notarized Apple Silicon Mac download as a `.dmg`.

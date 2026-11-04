@@ -7,16 +7,18 @@ quotes, and embedded newlines.
 
 This can be used to analyze how you spend your time on your computer.
 
-Supported platforms:
-- Windows
-- Linux (X11 and Wayland)
-- MacOS
+Prebuilt downloads:
+
+- Windows x86_64
+- Linux x86_64 (X11 and GNOME Wayland)
+- macOS Apple Silicon (no Intel Mac binary)
 
 ## Prerequisites
 
 ### Linux
 
-For mouse movement tracking, the user running `work_log` must be a member of the `input` group:
+Mouse movement tracking requires access to `/dev/input/event*` on both X11 and
+Wayland, usually through membership in the `input` group:
 
 ```bash
 sudo usermod -aG input $USER
@@ -24,7 +26,7 @@ sudo usermod -aG input $USER
 
 Log out and back in for the group change to take effect.
 
-> **Note:** On some distributions, the group may be called `plugdev` instead. If `input` doesn't work, try adding yourself to `plugdev` as well.
+If your distribution uses another group for `/dev/input/event*`, use that group instead.
 
 #### GNOME Wayland
 
@@ -63,9 +65,14 @@ On older macOS versions, these settings are under **System Preferences > Securit
 
 Download the latest release for your platform from the [releases page](https://github.com/daniel-sc/work_log/releases).
 
-On Apple Silicon Macs, open the `.dmg` and copy `work_log` to a permanent folder,
-then run it from Terminal. Starting with 1.2.0-beta.3, Mac releases are Developer ID
-signed and notarized. Grant the macOS permissions described above before logging.
+On Linux and Windows, extract the archive to a permanent folder.
+
+On Apple Silicon Macs, opening the `.dmg` mounts a temporary `work_log` disk in
+Finder. Copy the executable to a permanent folder (for example, a `Tools` folder
+in your home directory), then eject the `work_log` disk. Run the copied file from
+Terminal, for example: `"$HOME/Tools/work_log" --help`. Starting with 1.2.0-beta.3,
+Mac releases are Developer ID signed and notarized. Grant the macOS permissions
+described above before logging.
 
 ## Usage
 
@@ -83,21 +90,30 @@ Options:
   --help               display this help and exit
 ```
 
-To refresh an existing autostart entry after an upgrade, rerun `--autostart-install`
-with your desired options.
+Run `./work_log` (`.\work_log.exe` in PowerShell) from its folder to append to
+`work_log.csv` in your home directory. Stop it with Ctrl+C.
+
+To enable logging at login, run `./work_log --autostart-install` from the permanent
+copy, adding any desired options such as `--file=/path/to/log.csv`. After an upgrade
+or moving the executable, rerun this command to refresh the autostart entry.
 
 On macOS, autostart installation rejects paths/options containing `&`, `<`, `]]>`,
 carriage returns, or XML-invalid characters. Use another path or run normally.
 
 ## Example
 
-The resulting csv file will look like this:
+The CSV has no header. Its five fields are timestamp (RFC 3339), app name, window
+title, and two empty legacy coordinate fields:
 
 ```csv
 2025-02-10T14:11:27+01:00,Editor,my-project,,
 2025-02-10T14:11:29+01:00,Editor,my-project,,
 2025-02-10T14:11:31+01:00,Browser,"Report, Q4",,
 ```
+
+Logging is best effort: failed file writes are reported to stderr and not retried.
+Keyboard input alone does not produce records; this is not a continuous activity
+or session-duration measurement.
 
 ## View
 The resulting CSV can be analysed by [work_log_view](https://daniel-sc.github.io/work_log_view/) - just drop the CSV in your browser window and get your result:

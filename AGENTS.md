@@ -23,7 +23,7 @@ sudo apt-get install -y libx11-dev libxi-dev libxtst-dev libevdev-dev libdbus-1-
 
 ## Linux Runtime Requirements
 
-- **Mouse tracking (Wayland):** User must be in the `input` group: `sudo usermod -aG input $USER` (log out/in after)
+- **Mouse tracking (X11 and Wayland):** This build uses libinput; user must have access to input devices, usually via `sudo usermod -aG input $USER` (log out/in after)
 - **Active window (GNOME Wayland):** Requires the x-win GNOME Shell extension. The app installs missing extensions and refreshes outdated metadata/incomplete installations (GNOME 42–50); user must then log out/in and enable it with `gnome-extensions enable x-win@miniben90.org`
 
 ## Structure
@@ -33,8 +33,10 @@ sudo apt-get install -y libx11-dev libxi-dev libxtst-dev libevdev-dev libdbus-1-
 - `src/get_state.rs` - Reads active window via `x-win` and detects mouse movement via `rdev`
 - `src/gnome_extension.rs` - GNOME Wayland extension setup, upgrade detection, and startup probe
 - `src/write_csv.rs` - Appends state to CSV file
+- `.github/scripts/notarize-macos.sh` - Signs and notarizes the Mac disk image
 
 ## CI
 
 - `rust.yml` - Builds and tests on Linux, macOS, Windows on push/PR to `master`
 - `release.yml` - Creates GitHub release with binaries when tags matching `v[0-9]+.*` are pushed
+- Mac releases use Developer ID signing, notarization, and a stapled `.dmg`; Gatekeeper assessment must pass before upload
